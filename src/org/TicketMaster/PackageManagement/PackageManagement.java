@@ -22,29 +22,25 @@ public class PackageManagement {
 
 	public void depend(String... items)
 	{
-		for(int i=0;i<items.length;i++)
-		{			
-				if(i>0)
-				{
-					if(!packageMap.containsKey(items[i]))
-					{
-					packageMap.put(items[i], new Node(items[i]));
-					}
-					
-					Node dependant = packageMap.get(items[i-1]);
-					if(!dependant.hasDependency(items[i]))
-					{
-						dependant.addDependency(items[i]);
-					}
-				}
-				else
-				{
-					packageMap.put(items[i], new Node(items[i]));
-				}
-				
-			
-			
+		if(!packageMap.containsKey(items[0]))
+		{
+			packageMap.put(items[0], new Node(items[0]));
 		}
+		
+		Node currentNode = packageMap.get(items[0]);
+		
+		for(int i=1;i<items.length;i++)
+		{
+			if(!packageMap.containsKey(items[i]))
+			{
+			packageMap.put(items[i], new Node(items[i]));
+			}
+			if(!currentNode.hasDependency(items[i]))
+			{
+				currentNode.addDependency(items[i]);
+			}
+		}
+		
 	}
 
 	public void install(String item)
@@ -60,12 +56,20 @@ public class PackageManagement {
 					if(!packageMap.containsKey(dependency))
 					{
 						System.out.println("Cannot install "+item+" as Dependecyt "+dependency+" is not found");
-					}
+					} 
 					install(dependency);
 				}
 			}
-			installedItems.add(item);
-			System.out.println("Installing: "+item);
+			if(!installedItems.contains(item))
+			{
+				installedItems.add(item);
+				System.out.println("Installing: "+item);
+			}
+			else
+			{
+				System.out.println(item+" found already installed");
+			}
+			
 		}
 		else
 		{
@@ -133,12 +137,8 @@ public class PackageManagement {
 		break;
 		case "end" : break LOOP ;
 		default : System.out.println("Invalid command");
+		}	
 		}
-		
-		
-		}
-		
-		
 		
 	}
 

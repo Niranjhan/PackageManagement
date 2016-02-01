@@ -23,6 +23,7 @@ private HashSet<String> DependencySet;
 	{
 		return new HashSet<String>(DependencySet);
 	}
+	
 	public boolean addDependency(String dependency)
 	{	
 		    hasDependency = true;
@@ -41,6 +42,7 @@ private HashSet<String> DependencySet;
 			return false;
 		}
 	}
+	
 	public boolean hasDependency(String dependency)
 	{
 		if((DependencySet!=null))
