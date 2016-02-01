@@ -1,9 +1,11 @@
 package org.TicketMaster.PackageManagement;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PackageManagement {
@@ -21,12 +23,14 @@ public class PackageManagement {
 	public void depend(String... items)
 	{
 		for(int i=0;i<items.length;i++)
-		{
-			if(!packageMap.containsKey(items[i]))
-			{
+		{			
 				if(i>0)
 				{
+					if(!packageMap.containsKey(items[i]))
+					{
 					packageMap.put(items[i], new Node(items[i]));
+					}
+					
 					Node dependant = packageMap.get(items[i-1]);
 					if(!dependant.hasDependency(items[i]))
 					{
@@ -38,7 +42,7 @@ public class PackageManagement {
 					packageMap.put(items[i], new Node(items[i]));
 				}
 				
-			}
+			
 			
 		}
 	}
@@ -79,11 +83,11 @@ public class PackageManagement {
 
 	public void remove(String name)
 	{
-		if(!packageMap.containsKey(name))
+		if(!packageMap.containsKey(name) || !installedItems.contains(name))
 		{
 			return;
 		}
-		packageMap.remove(name);
+		installedItems.remove(name);
 		for(String item : packageMap.keySet())
 		{
 			if(packageMap.containsKey(item))
@@ -100,12 +104,41 @@ public class PackageManagement {
 	public static void main(String[] args)
 	{
 		PackageManagement PM = new PackageManagement();
-		PM.depend("item1","item2","item3");
+		
+
+	    LOOP : 
+		while(true)
+		{
+		System.out.println("Enter your command:");
+		Scanner sc = new Scanner(System.in);
+		String input = sc.nextLine();
+		String[] inputarr = input.split("\\s+");  
+		if(inputarr==null || inputarr.length == 0)
+		{
+			System.out.println("Invalid Command");
+			continue;
+		}
+		String command = inputarr[0];
+		String[] commandArguments = Arrays.copyOfRange(inputarr, 1, inputarr.length);
 	
-		PM.install("item1");
-		PM.List();
-		PM.remove("item3");
-		PM.install("item2");
+		switch(command.toLowerCase())
+		{
+		case "depend" : PM.depend(commandArguments);
+		break;
+		case "install": PM.install(commandArguments[0]);
+		break;
+		case  "list": PM.List() ;
+		break;
+		case "remove" : PM.remove(commandArguments[0]);
+		break;
+		case "end" : break LOOP ;
+		default : System.out.println("Invalid command");
+		}
+		
+		
+		}
+		
+		
 		
 	}
 
